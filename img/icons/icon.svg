@@ -1,0 +1,18 @@
+<!-- Ícono de la app: mancuerna azul sobre fondo negro, con un punto verde de "completado".
+     iOS recorta las esquinas solo, por eso el fondo es un cuadrado completo. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <rect width="512" height="512" fill="#000000"/>
+  <g transform="rotate(-30 256 256)" fill="#2f7bff">
+    <!-- barra -->
+    <rect x="130" y="238" width="252" height="36" rx="10"/>
+    <!-- discos izquierda -->
+    <rect x="96" y="176" width="44" height="160" rx="14"/>
+    <rect x="60" y="204" width="32" height="104" rx="12"/>
+    <!-- discos derecha -->
+    <rect x="372" y="176" width="44" height="160" rx="14"/>
+    <rect x="420" y="204" width="32" height="104" rx="12"/>
+  </g>
+  <!-- punto verde con check -->
+  <circle cx="372" cy="384" r="62" fill="#2ecc71"/>
+  <path d="M342 384l22 22 40-44" fill="none" stroke="#000" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

@@ -1,0 +1,64 @@
+<!doctype html>
+<!--
+  index.html — la ÚNICA página de la app.
+  Todas las "pantallas" (Home, Body, Settings...) se dibujan con JavaScript
+  dentro de <main id="screen">. Cambiar de pantalla = cambiar lo que hay
+  dentro de ese <main>, sin recargar la página (como una app nativa).
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <!-- viewport-fit=cover: usa toda la pantalla del iPhone, incluida la zona del "notch" -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>WorkOutBody</title>
+
+  <!-- Colores de la barra del sistema -->
+  <meta name="theme-color" content="#000000">
+
+  <!-- Metadatos para que iOS trate la página como app al "Agregar a pantalla de inicio" -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="WorkOutBody">
+  <link rel="apple-touch-icon" href="./img/icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="./img/icons/icon-192.png">
+
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="stylesheet" href="./css/styles.css">
+</head>
+<body>
+  <!-- Barra superior: título de la pantalla + engranaje para Settings -->
+  <header class="topbar">
+    <h1 id="screen-title">WorkOutBody</h1>
+    <a href="#/settings" class="icon-btn" id="settings-btn" aria-label="Settings">
+      <!-- Ícono de engranaje (SVG dibujado a mano, sin librerías) -->
+      <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+        <path fill="currentColor" d="M19.4 13a7.5 7.5 0 0 0 0-2l2.1-1.6-2-3.5-2.5 1a7.6 7.6 0 0 0-1.7-1L15 3.3h-4l-.4 2.6a7.6 7.6 0 0 0-1.7 1l-2.5-1-2 3.5L6.6 11a7.5 7.5 0 0 0 0 2l-2.1 1.6 2 3.5 2.5-1a7.6 7.6 0 0 0 1.7 1l.4 2.6h4l.4-2.6a7.6 7.6 0 0 0 1.7-1l2.5 1 2-3.5L19.4 13ZM13 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7Z" transform="translate(-1 0)"/>
+      </svg>
+    </a>
+  </header>
+
+  <!-- Aquí se dibuja la pantalla actual -->
+  <main id="screen"></main>
+
+  <!-- Barra inferior de navegación -->
+  <nav class="tabbar">
+    <a href="#/home" class="tab" data-tab="home">
+      <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true">
+        <path fill="currentColor" d="M12 3 2 11h3v9h5v-6h4v6h5v-9h3L12 3Z"/>
+      </svg>
+      <span>Home</span>
+    </a>
+    <a href="#/body" class="tab" data-tab="body">
+      <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true">
+        <circle cx="12" cy="4.5" r="2.5" fill="currentColor"/>
+        <path fill="currentColor" d="M5 8h14v2.2h-4.6V21h-2.2v-5h-.4v5H9.6V10.2H5V8Z"/>
+      </svg>
+      <span>Body</span>
+    </a>
+  </nav>
+
+  <!-- type="module": permite usar import/export entre archivos JS -->
+  <script type="module" src="./js/app.js"></script>
+</body>
+</html>

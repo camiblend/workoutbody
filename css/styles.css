@@ -1,0 +1,131 @@
+/*
+  styles.css — estilos de toda la app.
+  Los colores están definidos UNA vez como "variables" (--nombre) en :root.
+  Para cambiar un color en toda la app, cámbialo solo aquí.
+*/
+:root {
+  --bg: #000000;          /* fondo general */
+  --surface: #16171b;     /* tarjetas */
+  --surface-2: #23252b;   /* tarjetas internas / inputs */
+  --border: #2e3038;
+  --text: #f5f6f8;
+  --text-dim: #9a9ca5;    /* texto secundario */
+  --accent: #2f7bff;      /* azul principal */
+  --accent-press: #1f63db;
+  --done: #2ecc71;        /* verde de completado */
+  --extra: #f5a623;       /* naranja para sesiones extra */
+  --radius: 16px;
+  --tabbar-h: 64px;
+  --topbar-h: 52px;
+  color-scheme: dark;     /* inputs, scrollbars, etc. en modo oscuro */
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+  /* evita el "rebote" azul al tocar en iOS */
+  -webkit-tap-highlight-color: transparent;
+}
+
+a { color: var(--accent); }
+
+/* ---------- Barra superior ---------- */
+/* env(safe-area-inset-top) = espacio del notch / isla dinámica del iPhone */
+.topbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 10;
+  height: calc(var(--topbar-h) + env(safe-area-inset-top));
+  padding: env(safe-area-inset-top) 16px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.topbar h1 { font-size: 22px; margin: 0; font-weight: 700; }
+
+.icon-btn {
+  color: var(--text-dim);
+  display: flex;
+  padding: 8px;
+  margin-right: -8px;
+  border-radius: 50%;
+}
+.icon-btn.active { color: var(--accent); }
+
+/* ---------- Zona de contenido ---------- */
+main {
+  padding: calc(var(--topbar-h) + env(safe-area-inset-top) + 8px) 16px
+           calc(var(--tabbar-h) + env(safe-area-inset-bottom) + 24px);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* ---------- Barra inferior ---------- */
+.tabbar {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 10;
+  height: calc(var(--tabbar-h) + env(safe-area-inset-bottom));
+  padding-bottom: env(safe-area-inset-bottom);
+  display: flex;
+  background: rgba(10, 10, 12, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid var(--border);
+}
+.tab {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 11px;
+  font-weight: 600;
+}
+.tab.active { color: var(--accent); }
+
+/* ---------- Componentes reutilizables ---------- */
+.card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 12px;
+}
+.muted { color: var(--text-dim); }
+
+.btn {
+  display: block;
+  width: 100%;
+  border: 0;
+  border-radius: 999px;
+  padding: 16px;
+  font: inherit;
+  font-weight: 700;
+  font-size: 17px;
+  color: #fff;
+  background: var(--accent);
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+.btn:active { background: var(--accent-press); }
+.btn.secondary { background: var(--surface-2); color: var(--text); }
+
+/* Pantalla de "en construcción" de la etapa 1 */
+.placeholder {
+  text-align: center;
+  padding: 48px 16px;
+}
+.placeholder .big { font-size: 48px; margin-bottom: 8px; }
