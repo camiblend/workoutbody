@@ -394,7 +394,18 @@ main {
   min-width: 0;
 }
 .text-input:focus { outline: none; border-color: var(--accent); }
-input[type="date"].text-input { min-height: 44px; }
+/* Safari de iPhone le da a los campos de fecha un ancho mínimo propio y los
+   centra; esto los obliga a respetar el ancho de la tarjeta y alinearse a la izquierda. */
+input[type="date"].text-input {
+  -webkit-appearance: none;
+  appearance: none;
+  display: block;
+  min-width: 0;
+  max-width: 100%;
+  min-height: 44px;
+  text-align: left;
+}
+input[type="date"].text-input::-webkit-date-and-time-value { text-align: left; }
 
 .date-field { display: block; margin-bottom: 12px; }
 .measure-label { display: block; font-size: 13px; color: var(--text-dim); margin-bottom: 4px; font-weight: 600; }
