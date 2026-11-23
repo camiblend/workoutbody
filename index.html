@@ -29,7 +29,15 @@
 <body>
   <!-- Barra superior: título de la pantalla + engranaje para Settings -->
   <header class="topbar">
-    <h1 id="screen-title">WorkOutBody</h1>
+    <div class="topbar-left">
+      <!-- Botón para volver; se muestra solo en algunas pantallas (ver app.js) -->
+      <a href="#/home" class="icon-btn back-btn" id="back-btn" aria-label="Back" hidden>
+        <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true">
+          <path fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="M15 5l-7 7 7 7"/>
+        </svg>
+      </a>
+      <h1 id="screen-title">WorkOutBody</h1>
+    </div>
     <a href="#/settings" class="icon-btn" id="settings-btn" aria-label="Settings">
       <!-- Ícono de engranaje (SVG dibujado a mano, sin librerías) -->
       <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">

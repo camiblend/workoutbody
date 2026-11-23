@@ -4,6 +4,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
   todayISO, nowLocal, addDays, weekStart, weekNumber, formatDDMM, weekRangeLabel,
+  dayLabel, isISODate,
 } from '../js/weeks.js';
 
 test('weekStart: Monday stays Monday', () => {
@@ -59,4 +60,12 @@ test('nowLocal formats Santiago date and time', () => {
 test('labels', () => {
   assert.equal(formatDDMM('2026-11-05'), '05/11');
   assert.equal(weekRangeLabel('2026-11-23'), '23/11 – 29/11');
+  assert.equal(dayLabel('2026-11-23'), 'Mon 23/11');
+  assert.equal(dayLabel('2026-11-29'), 'Sun 29/11');
+});
+
+test('isISODate', () => {
+  assert.equal(isISODate('2026-11-23'), true);
+  assert.equal(isISODate('23/11/2026'), false);
+  assert.equal(isISODate(undefined), false);
 });

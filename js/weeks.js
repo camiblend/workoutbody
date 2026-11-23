@@ -85,6 +85,17 @@ export function formatDDMM(iso) {
   return `${d}/${m}`;
 }
 
+/** "2026-11-23" → "Mon 23/11". */
+export function dayLabel(iso) {
+  const names = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  return `${names[toDate(iso).getUTCDay()]} ${formatDDMM(iso)}`;
+}
+
+/** ¿Es un texto con forma de fecha "YYYY-MM-DD"? (para validar lo que viene en la URL) */
+export function isISODate(text) {
+  return /^\d{4}-\d{2}-\d{2}$/.test(text ?? '');
+}
+
 /** Rango de la semana para mostrar: "23/11 – 29/11". */
 export function weekRangeLabel(weekStartIso) {
   return `${formatDDMM(weekStartIso)} – ${formatDDMM(addDays(weekStartIso, 6))}`;

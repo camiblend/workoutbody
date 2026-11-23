@@ -4,7 +4,11 @@
 //      decide qué pantalla dibujar. Ej: index.html#/body → pantalla Body.
 //   2. Registra el service worker (sw.js) para que la app funcione sin internet.
 
+import { h } from './ui.js';
 import * as home from './screens/home.js';
+import * as choose from './screens/choose.js';
+import * as routine from './screens/routine.js';
+import * as session from './screens/session.js';
 import * as body from './screens/body.js';
 import * as settings from './screens/settings.js';
 
@@ -12,29 +16,41 @@ import * as settings from './screens/settings.js';
 // Cada módulo de pantalla exporta:
 //   - title:  texto de la barra superior
 //   - tab:    qué pestaña inferior se marca ('home', 'body' o null)
-//   - render(container): dibuja la pantalla dentro de container
-// En etapas siguientes agregaremos: choose, routine, session.
+//   - back:   (opcional) función que devuelve a dónde va el botón "‹ Back"
+//   - render(container, params): dibuja la pantalla dentro de container
+//
+// "params" son las partes extra de la URL. Ej: #/routine/chest_beginner/2026-11-23
+//   → pantalla "routine", params = ['chest_beginner', '2026-11-23']
 const routes = {
   home,
+  choose,
+  routine,
+  session,
   body,
   settings,
 };
 
 const screenEl = document.getElementById('screen');
 const titleEl = document.getElementById('screen-title');
+const backEl = document.getElementById('back-btn');
 
-/** Lee la ruta actual desde la URL. "#/body" → "body". Si no hay, "home". */
+/** Lee la ruta actual desde la URL. "#/routine/a/b" → { name: 'routine', params: ['a', 'b'] } */
 function currentRoute() {
-  const name = location.hash.replace(/^#\/?/, '').split('/')[0];
-  return routes[name] ? name : 'home';
+  const [name, ...params] = location.hash.replace(/^#\/?/, '').split('/');
+  return routes[name] ? { name, params: params.map(decodeURIComponent) } : { name: 'home', params: [] };
 }
 
 /** Dibuja la pantalla correspondiente a la URL actual. */
 async function render() {
-  const name = currentRoute();
+  const { name, params } = currentRoute();
   const screen = routes[name];
 
   titleEl.textContent = screen.title;
+
+  // Botón "‹" para volver (solo en pantallas que lo definen)
+  const backHref = screen.back ? screen.back(params) : null;
+  backEl.hidden = !backHref;
+  if (backHref) backEl.href = backHref;
 
   // Marca la pestaña activa en la barra inferior
   document.querySelectorAll('.tab').forEach((tab) => {
@@ -44,7 +60,18 @@ async function render() {
 
   // Borra la pantalla anterior y dibuja la nueva
   screenEl.replaceChildren();
-  await screen.render(screenEl);
+  try {
+    await screen.render(screenEl, params);
+  } catch (err) {
+    // Si algo falla, mostramos el error en vez de una pantalla en blanco
+    console.error(err);
+    screenEl.replaceChildren(
+      h('div', { class: 'card' },
+        h('h2', {}, 'Something went wrong'),
+        h('p', { class: 'muted' }, err.message),
+      ),
+    );
+  }
   window.scrollTo(0, 0);
 }
 
