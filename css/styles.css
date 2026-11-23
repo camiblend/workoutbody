@@ -33,6 +33,13 @@ html, body {
   -webkit-tap-highlight-color: transparent;
 }
 
+/* iPhone (app instalada): si la página es más corta que la pantalla, iOS calcula
+   mal el alto y la barra inferior queda flotando con una franja negra debajo.
+   Obligamos a la página a medir siempre al menos toda la pantalla
+   (incluida la zona de la barra de estado). */
+html { min-height: calc(100% + env(safe-area-inset-top)); }
+body { min-height: 100%; }
+
 a { color: var(--accent); }
 
 /* ---------- Barra superior ---------- */
