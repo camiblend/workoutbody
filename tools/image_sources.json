@@ -1,0 +1,40 @@
+{
+  "_comment": "Equivalencia ejercicio de la app → ejercicio del dataset free-exercise-db (github.com/yuhonas/free-exercise-db, licencia Unlicense). match: exact | approx | none. Después de editar, corre: python3 tools/fetch_images.py",
+
+  "db_floor_press":           { "source": "Dumbbell_Floor_Press",            "match": "exact" },
+  "db_floor_fly":             { "source": "Dumbbell_Flyes",                  "match": "approx", "why": "On a bench instead of the floor" },
+  "db_squeeze_press":         { "source": "Close-Grip_Dumbbell_Press",       "match": "approx", "why": "One dumbbell held with both hands, on a bench" },
+  "db_pullover":              { "source": "Straight-Arm_Dumbbell_Pullover",  "match": "approx", "why": "Lying across a bench instead of on the mat" },
+  "incline_push_up":          { "source": "Incline_Push-Up",                 "match": "exact" },
+
+  "db_bent_over_row":         { "source": "Bent_Over_Two-Dumbbell_Row",      "match": "exact" },
+  "db_one_arm_row":           { "source": "One-Arm_Dumbbell_Row",            "match": "exact" },
+  "band_pull_apart":          { "source": "Band_Pull_Apart",                 "match": "exact" },
+  "superman":                 { "source": "Superman",                        "match": "exact" },
+  "bird_dog":                 { "source": null,                              "match": "none" },
+
+  "db_seated_shoulder_press": { "source": "Seated_Dumbbell_Press",           "match": "exact" },
+  "db_lateral_raise":         { "source": "Side_Lateral_Raise",              "match": "exact" },
+  "db_front_raise":           { "source": "Front_Two-Dumbbell_Raise",        "match": "exact" },
+  "db_reverse_fly":           { "source": "Seated_Bent-Over_Rear_Delt_Raise","match": "approx", "why": "Seated bent over instead of standing" },
+  "band_external_rotation":   { "source": "External_Rotation_with_Band",     "match": "approx", "why": "Band anchored to a post, one arm at a time" },
+
+  "db_biceps_curl":           { "source": "Dumbbell_Bicep_Curl",             "match": "exact" },
+  "db_hammer_curl":           { "source": "Hammer_Curls",                    "match": "exact" },
+  "db_overhead_triceps_ext":  { "source": "Standing_Dumbbell_Triceps_Extension", "match": "exact" },
+  "db_triceps_kickback":      { "source": "Tricep_Dumbbell_Kickback",        "match": "exact" },
+  "chair_dip":                { "source": "Bench_Dips",                      "match": "approx", "why": "On a bench with straight legs" },
+
+  "db_goblet_squat":          { "source": "Goblet_Squat",                    "match": "approx", "why": "Kettlebell instead of a dumbbell" },
+  "band_glute_bridge":        { "source": "Butt_Lift_Bridge",                "match": "approx", "why": "Without the band" },
+  "reverse_lunge":            { "source": "Dumbbell_Rear_Lunge",             "match": "exact" },
+  "db_romanian_deadlift":     { "source": "Stiff-Legged_Dumbbell_Deadlift",  "match": "exact" },
+  "band_lateral_walk":        { "source": "Monster_Walk",                    "match": "approx", "why": "Walks forward/back instead of sideways" },
+  "band_clamshell":           { "source": null,                              "match": "none" },
+
+  "crunch":                   { "source": "Crunches",                        "match": "exact" },
+  "dead_bug":                 { "source": "Dead_Bug",                        "match": "exact" },
+  "forearm_plank":            { "source": "Plank",                           "match": "exact" },
+  "bicycle_crunch":           { "source": "Air_Bike",                        "match": "exact" },
+  "bent_knee_leg_raise":      { "source": "Reverse_Crunch",                  "match": "approx", "why": "Also rolls the hips up at the top" }
+}

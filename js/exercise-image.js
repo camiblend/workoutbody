@@ -20,8 +20,10 @@ const PLACEHOLDER_ICONS = {
 /**
  * Devuelve un elemento con la imagen (animada) del ejercicio.
  * @param {object} item  item de rutina (tiene image e implement)
+ * @param {object} [options]
+ * @param {boolean} [options.large]  versión grande (detalle del ejercicio)
  */
-export function exerciseImage(item) {
+export function exerciseImage(item, { large = false } = {}) {
   if (!item.image) {
     const box = document.createElement('div');
     box.className = 'ex-img placeholder-img';
@@ -31,7 +33,7 @@ export function exerciseImage(item) {
 
   const frames = [`./${item.image}/0.jpg`, `./${item.image}/1.jpg`];
   const img = document.createElement('img');
-  img.className = 'ex-img';
+  img.className = large ? 'ex-img-large' : 'ex-img';
   img.alt = item.name;
   img.loading = 'lazy';
   img.src = frames[0];

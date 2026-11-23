@@ -4,8 +4,6 @@ App personal (PWA) para registrar rutinas de ejercicio en casa, pensada para iPh
 HTML + CSS + JavaScript puro, sin frameworks ni paso de build: lo que ves en el repo
 es exactamente lo que corre en el teléfono.
 
-> Este README crece etapa por etapa. Falta: imágenes de ejercicios (etapa 7).
-
 ---
 
 ## 1. Correr la app en tu computador
@@ -173,7 +171,38 @@ Si escribiste mal un id, el test te dice en qué rutina y en qué posición.
 
 ---
 
-## 7. Tests
+## 7. Imágenes de ejercicios
+
+Las fotos vienen de [free-exercise-db](https://github.com/yuhonas/free-exercise-db)
+(licencia Unlicense). Cada ejercicio tiene 2 fotos (inicio y fin) que la app alterna
+cada segundo. Solo se guardan en el repo las que se usan (`img/exercises/<id>/`).
+
+La equivalencia está en [`docs/exercise-mapping.md`](docs/exercise-mapping.md):
+19 exactas, 10 aproximadas (mismo movimiento con otra postura o implemento) y
+2 sin imagen (Bird dog y Band clamshell, que muestran un ícono).
+
+**Cambiar o agregar una imagen:**
+1. Busca el ejercicio en el dataset (el `id` es el nombre de la carpeta en
+   `exercises/`, ej. `Dumbbell_Floor_Press`).
+2. Edita [`tools/image_sources.json`](tools/image_sources.json):
+   `"source"` con ese id y `"match"` con `exact`, `approx` o `none`.
+3. Corre:
+   ```bash
+   python3 tools/fetch_images.py
+   ```
+   Descarga las fotos, actualiza el campo `image` en `routines.json`, las
+   instrucciones (`data/exercise-details.json`) y la tabla de equivalencias.
+
+Si agregas un ejercicio nuevo a `routines.json`, agrégalo también a
+`image_sources.json` (aunque sea con `"source": null`).
+
+**Videos:** para cualquier ejercicio puedes poner un link en `video_url`
+(ej. un reel de Instagram). Aparece como "▶ Watch video" al tocar el ejercicio
+en *Today's routine* y se abre fuera de la app.
+
+---
+
+## 8. Tests
 
 Prueban el cálculo de semanas (zona horaria de Santiago, cambio de horario, cambio
 de año), que `routines.json` esté bien escrito, y el Apps Script (`Code.gs`) contra
@@ -205,6 +234,11 @@ js/exercise-image.js    imagen animada de cada ejercicio
 apps-script/Code.gs     backend que se pega en el Google Sheet
 js/screens/*.js         una pantalla por archivo
 img/icons/              ícono de la app (icon.svg es el original)
+img/exercises/          fotos de ejercicios (descargadas por tools/fetch_images.py)
+data/exercise-details.json  instrucciones del dataset (generado)
+tools/fetch_images.py   descarga imágenes del dataset
+tools/image_sources.json    equivalencia ejercicio → dataset
+docs/exercise-mapping.md    tabla de equivalencias (generada)
 tests/                  tests (npm test)
 ```
 

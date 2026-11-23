@@ -247,7 +247,7 @@ main {
   margin-bottom: 10px;
 }
 .ex-img {
-  width: 84px; height: 84px; flex-shrink: 0;
+  width: 96px; height: 72px; flex-shrink: 0; /* 4:3, como las fotos del dataset */
   border-radius: 12px;
   object-fit: cover;
   background: #fff;
@@ -334,7 +334,7 @@ main {
   cursor: pointer;
 }
 .check-row.done { border-color: var(--done); }
-.check-row .ex-img { width: 72px; height: 72px; }
+.check-row .ex-img { width: 80px; height: 60px; }
 .check-row .exercise-info { flex: 1; }
 .check-btn {
   width: 40px; height: 40px; flex-shrink: 0;
@@ -477,3 +477,23 @@ input[type="date"].text-input { min-height: 44px; }
 .inline-form .measure-input { flex: 1; }
 .button-row { display: flex; gap: 10px; }
 .button-row .btn { flex: 1; padding: 14px; font-size: 16px; }
+
+/* ---------- Detalle de ejercicio (Today's routine) ---------- */
+.exercise-row.expandable { display: block; cursor: pointer; }
+.exercise-summary { display: flex; gap: 14px; align-items: center; }
+.exercise-summary .exercise-info { flex: 1; }
+.exercise-row .chevron { transition: transform 0.2s; }
+.exercise-row.open .chevron { transform: rotate(90deg); }
+.exercise-detail { display: none; padding: 12px 4px 4px; cursor: default; }
+.exercise-row.open .exercise-detail { display: block; }
+.ex-img-large {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  border-radius: 12px;
+  background: #fff;
+  margin-bottom: 10px;
+}
+.instructions { margin: 8px 0 4px; padding-left: 20px; font-size: 14px; line-height: 1.45; color: var(--text); }
+.instructions li { margin-bottom: 6px; }

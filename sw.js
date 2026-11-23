@@ -11,7 +11,7 @@
 // Si alguna vez la app queda "pegada" en una versión vieja, sube el número de
 // CACHE_VERSION, publica, y abre la app dos veces.
 
-const CACHE_VERSION = 'v6';
+const CACHE_VERSION = 'v7';
 const CACHE_NAME = `workoutbody-${CACHE_VERSION}`;
 
 // Archivos que se guardan apenas se instala la app (el "cascarón").
@@ -32,6 +32,7 @@ const APP_SHELL = [
   './js/chart.js',
   './js/sync.js',
   './data/routines.json',
+  './data/exercise-details.json',
   './js/screens/home.js',
   './js/screens/choose.js',
   './js/screens/routine.js',
@@ -44,9 +45,22 @@ const APP_SHELL = [
 
 // "install": primera vez que se registra el service worker → guarda el cascarón.
 self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(APP_SHELL)),
-  );
+  event.waitUntil((async () => {
+    const cache = await caches.open(CACHE_NAME);
+    await cache.addAll(APP_SHELL);
+    // Imágenes de ejercicios: las leemos de routines.json y las guardamos todas,
+    // así funcionan sin internet desde el primer uso. Si alguna falla, no se
+    // bloquea la instalación (se guardará cuando se vea con internet).
+    try {
+      const routines = await (await cache.match('./data/routines.json')).json();
+      const images = Object.values(routines.exercises)
+        .filter((e) => e.image)
+        .flatMap((e) => [`./${e.image}/0.jpg`, `./${e.image}/1.jpg`]);
+      await Promise.allSettled(images.map((url) => cache.add(url)));
+    } catch (err) {
+      console.warn('Could not pre-cache exercise images', err);
+    }
+  })());
   self.skipWaiting(); // activarse sin esperar a que se cierren pestañas viejas
 });
 

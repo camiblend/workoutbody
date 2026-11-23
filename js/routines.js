@@ -15,9 +15,12 @@ let cache = null; // guardamos el resultado para no leer el archivo dos veces
  */
 export async function loadRoutines() {
   if (cache) return cache;
-  const response = await fetch('./data/routines.json');
-  const data = await response.json();
-  cache = prepareRoutines(data);
+  const [data, details] = await Promise.all([
+    fetch('./data/routines.json').then((r) => r.json()),
+    // Instrucciones del dataset (generado por tools/fetch_images.py). Si falta, seguimos sin él.
+    fetch('./data/exercise-details.json').then((r) => (r.ok ? r.json() : {})).catch(() => ({})),
+  ]);
+  cache = prepareRoutines(data, details);
   return cache;
 }
 
@@ -27,7 +30,7 @@ export async function loadRoutines() {
  * Si hay un error en el JSON (ej. un exercise_id mal escrito) lanza un error
  * que dice exactamente dónde está.
  */
-export function prepareRoutines(data) {
+export function prepareRoutines(data, details = {}) {
   const exercises = data.exercises;
   const routines = data.routines.map((routine) => {
     const items = routine.items.map((item, index) => {
@@ -45,6 +48,8 @@ export function prepareRoutines(data) {
         seconds: item.seconds ?? null,
         per_side: item.per_side === true,
         ...exercise, // name, implement, image, video_url, note
+        // { source_name, match, instructions } o null si no hay imagen del dataset
+        details: details[item.exercise_id] ?? null,
       };
     });
     return { ...routine, items };
