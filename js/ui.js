@@ -30,3 +30,14 @@ export function h(tag, attrs = {}, ...children) {
   }
   return el;
 }
+
+/**
+ * Muestra un mensaje corto abajo de la pantalla por unos segundos.
+ * Ej: showToast('Workout saved! 💪')
+ */
+export function showToast(text, ms = 2500) {
+  document.querySelector('.toast')?.remove(); // solo uno a la vez
+  const toast = h('div', { class: 'toast', role: 'status' }, text);
+  document.body.append(toast);
+  setTimeout(() => toast.remove(), ms);
+}

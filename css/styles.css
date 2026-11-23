@@ -270,3 +270,109 @@ main {
   bottom: calc(var(--tabbar-h) + env(safe-area-inset-bottom) + 12px);
   margin-top: 16px;
 }
+
+/* ---------- Sesión ---------- */
+.session-head { display: flex; align-items: baseline; gap: 10px; margin: 4px 0 12px; }
+.session-head h2 { margin: 0; font-size: 26px; }
+
+.stepper { list-style: none; display: flex; gap: 6px; margin: 0 0 18px; padding: 0; }
+.stepper li {
+  flex: 1;
+  display: flex; align-items: center; gap: 6px;
+  padding: 8px 6px;
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--text-dim);
+  font-size: 12.5px; font-weight: 600;
+  white-space: nowrap; /* "Cool-down" en una sola línea */
+}
+.stepper li.active { background: rgba(47, 123, 255, 0.18); color: var(--text); }
+.stepper li.done { color: var(--done); }
+.step-num {
+  width: 22px; height: 22px; flex-shrink: 0;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  border: 1.5px solid currentColor;
+  font-size: 12px;
+}
+.stepper li.active .step-num { background: var(--accent); border-color: var(--accent); color: #fff; }
+.stepper li.done .step-num { background: var(--done); border-color: var(--done); color: #000; }
+
+.step-body h3 { margin: 0 0 4px; font-size: 20px; }
+.step-body .card { margin-bottom: 16px; }
+
+/* Campo grande de minutos */
+.big-input-row { display: flex; align-items: baseline; justify-content: center; gap: 8px; margin-top: 12px; }
+.big-input {
+  width: 140px;
+  font: inherit; font-size: 48px; font-weight: 700;
+  text-align: center;
+  color: var(--text);
+  background: var(--surface-2);
+  border: 2px solid transparent;
+  border-radius: 14px;
+  padding: 8px;
+}
+.big-input:focus { outline: none; border-color: var(--accent); }
+.unit { font-size: 20px; color: var(--text-dim); font-weight: 600; }
+.field-error { color: #ff6b6b; text-align: center; font-size: 14px; margin: 10px 0 0; }
+.field-error[hidden] { display: none; }
+
+.finish-btn { background: var(--done); color: #000; }
+.finish-btn:active { background: #27b463; }
+.back-step { display: block; margin: 12px auto 0; color: var(--text-dim); }
+
+/* Checklist de ejercicios */
+.routine-step-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 10px; }
+.check-row {
+  display: flex; gap: 12px; align-items: center;
+  background: var(--surface);
+  border: 1.5px solid transparent;
+  border-radius: var(--radius);
+  padding: 10px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+.check-row.done { border-color: var(--done); }
+.check-row .ex-img { width: 72px; height: 72px; }
+.check-row .exercise-info { flex: 1; }
+.check-btn {
+  width: 40px; height: 40px; flex-shrink: 0;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: none;
+  color: transparent;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+}
+.check-row.done .check-btn { background: var(--done); border-color: var(--done); color: #000; }
+
+.kg-field { display: inline-flex; align-items: center; gap: 6px; margin-top: 6px; color: var(--text-dim); font-size: 14px; }
+.kg-input {
+  width: 64px;
+  font: inherit; font-size: 16px; /* 16px evita que iPhone haga zoom al tocar */
+  text-align: center;
+  color: var(--text);
+  background: var(--surface-2);
+  border: 1.5px solid transparent;
+  border-radius: 10px;
+  padding: 6px;
+}
+.kg-input:focus { outline: none; border-color: var(--accent); }
+
+/* Mensaje temporal */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(var(--tabbar-h) + env(safe-area-inset-bottom) + 20px);
+  transform: translateX(-50%);
+  z-index: 20;
+  background: var(--done);
+  color: #000;
+  font-weight: 700;
+  padding: 12px 20px;
+  border-radius: 999px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
+  animation: toast-in 0.25s ease-out;
+}
+@keyframes toast-in { from { opacity: 0; transform: translate(-50%, 10px); } }
