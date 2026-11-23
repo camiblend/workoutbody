@@ -41,3 +41,13 @@ export function showToast(text, ms = 2500) {
   document.body.append(toast);
   setTimeout(() => toast.remove(), ms);
 }
+
+/**
+ * Convierte lo que escribió el usuario en número decimal.
+ * Acepta coma o punto ("65,4" o "65.4"). Vacío → null. Inválido → NaN.
+ */
+export function parseDecimal(text) {
+  const clean = String(text ?? '').trim().replace(',', '.');
+  if (clean === '') return null;
+  return /^\d+(\.\d+)?$/.test(clean) ? Number(clean) : NaN;
+}
