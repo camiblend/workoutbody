@@ -4,6 +4,32 @@ App personal (PWA) para registrar rutinas de ejercicio en casa, pensada para iPh
 HTML + CSS + JavaScript puro, sin frameworks ni paso de build: lo que ves en el repo
 es exactamente lo que corre en el teléfono.
 
+**App publicada:** <https://camiblend.github.io/workoutbody/>
+
+## Qué hace
+- **Home:** semanas de lunes a domingo (hora de Chile) con 3 puntos por semana.
+  Cada sesión completada pinta un punto verde con su fecha; la 4ª en adelante
+  queda como *Extra*. La semana nueva aparece sola el lunes a las 00:00.
+- **Start → elegir grupo muscular → Today's routine → Let's go!**
+  Sesión en 3 pasos: *Warm-up* (minutos caminados), *Routine* (checklist + kg
+  opcional) y *Cool-down*. Si sales a la mitad, queda como borrador y la retomas.
+- **Body:** peso y medidas cuando quieras, con historial y gráfico por medida.
+- **Settings:** conexión con Google Sheets, estatura y respaldo JSON.
+- **Offline:** todo se guarda primero en el teléfono y se sincroniza al
+  Google Sheet cuando hay internet.
+
+## Índice
+1. [Correr la app en tu computador](#1-correr-la-app-en-tu-computador)
+2. [Publicar en GitHub Pages](#2-publicar-en-github-pages)
+3. [Instalar en el iPhone](#3-instalar-en-el-iphone)
+4. [Configurar Google Sheet + Apps Script](#4-configurar-google-sheet--apps-script)
+5. [Respaldo JSON](#5-respaldo-json)
+6. [Editar una rutina](#6-editar-una-rutina)
+7. [Imágenes de ejercicios](#7-imágenes-de-ejercicios)
+8. [Tests](#8-tests)
+9. [Preguntas frecuentes](#9-preguntas-frecuentes)
+10. [Para la etapa 2 (estadísticas)](#10-para-la-etapa-2-estadísticas)
+
 ---
 
 ## 1. Correr la app en tu computador
@@ -29,6 +55,9 @@ Para detener el servidor: `Ctrl + C` en la terminal.
 ## 2. Publicar en GitHub Pages
 
 Se hace una sola vez. Después, cada `git push` publica la versión nueva en ~1 minuto.
+
+> Ya está hecho para este repo ([camiblend/workoutbody](https://github.com/camiblend/workoutbody)).
+> Estos pasos sirven si algún día lo armas de nuevo.
 
 1. Crea un repositorio **público** en GitHub llamado `workoutbody` (sin README).
 2. En la carpeta del proyecto:
@@ -213,6 +242,65 @@ npm test
 
 ---
 
+## 9. Preguntas frecuentes
+
+**¿Dónde están mis datos?**
+En el teléfono (IndexedDB de la app). Si configuraste el Sheet, también allá.
+Las apps agregadas a la pantalla de inicio no sufren el borrado automático de
+Safari, pero si **borras la app** del iPhone se borran sus datos: antes de eso,
+asegúrate de que Settings diga *Pending changes: 0* o haz un **Export**.
+
+**Publiqué un cambio y no lo veo en el iPhone.**
+Abre la app, ciérrala (desliza hacia arriba) y ábrela de nuevo. Si sigue igual,
+sube `CACHE_VERSION` en `sw.js`, publica y repite.
+
+**Empecé una sesión y no la terminé.**
+Home muestra *Workout in progress*: **Resume** para seguir donde quedaste o
+**Discard** para descartarla. Solo puede haber una a la vez.
+
+**Me equivoqué y registré una sesión que no hice.**
+En la semana actual, toca la **×** al lado de la sesión. Las semanas pasadas son
+de solo lectura (si de verdad necesitas corregir una, bórrala en el Sheet y en un
+respaldo JSON, e impórtalo).
+
+**¿Qué fecha usa una sesión que empecé el domingo a las 23:50?**
+La del momento en que tocaste **Start** (domingo), aunque la termines el lunes.
+
+**¿Por qué Bird dog y Band clamshell no tienen imagen?**
+No existen en el dataset. Puedes ponerles un `video_url` (ver sección 7).
+
+---
+
+## 10. Para la etapa 2 (estadísticas)
+
+Las pestañas del Sheet están pensadas para analizarse directo (tabla dinámica,
+Looker Studio, o Python con pandas):
+
+| Pestaña | Una fila por | Clave |
+|---|---|---|
+| `sessions` | sesión completada | `session_id` |
+| `session_exercises` | ejercicio de cada sesión | `session_id` + `exercise_id` |
+| `body_measurements` | registro de medidas | `measurement_id` |
+| `settings` | ajuste (`height_cm`) | `key` |
+
+- `week_start` (lunes) agrupa por semana; `is_extra` marca la 4ª sesión en adelante.
+- `exercise_id` es estable aunque cambies el nombre visible del ejercicio.
+- Para unir sesiones con sus ejercicios usa `session_id`.
+- **Agregar un dato nuevo** (ej. velocidad e inclinación de la caminata): basta con
+  que la app lo guarde en la sesión (en `js/data.js` / `js/screens/session.js`); el
+  Apps Script crea la columna sola la primera vez que llega. Las filas antiguas
+  quedan con esa celda vacía.
+- IMC: peso (`body_measurements.weight_kg`) / (estatura en m)², con la estatura de `settings`.
+
+---
+
+## Créditos
+- Imágenes de ejercicios: [free-exercise-db](https://github.com/yuhonas/free-exercise-db)
+  (Unlicense / dominio público).
+- Siluetas musculares e ícono: hechos para esta app (SVG).
+
+---
+
 ## Estructura de archivos
 
 ```
@@ -220,7 +308,7 @@ index.html              página única; las pantallas se dibujan con JS dentro d
 manifest.webmanifest    nombre, ícono y colores al "Agregar a inicio"
 sw.js                   service worker: guarda la app para uso offline
 css/styles.css          estilos (colores definidos arriba del archivo)
-data/routines.json      las rutinas (lo único que se edita a mano)
+data/routines.json      las rutinas (para editarlas, ver sección 6)
 js/app.js               arranque + navegación entre pantallas
 js/ui.js                helper h() para crear elementos HTML
 js/routines.js          lee y valida routines.json

@@ -11,7 +11,7 @@
 // Si alguna vez la app queda "pegada" en una versión vieja, sube el número de
 // CACHE_VERSION, publica, y abre la app dos veces.
 
-const CACHE_VERSION = 'v7';
+const CACHE_VERSION = 'v8';
 const CACHE_NAME = `workoutbody-${CACHE_VERSION}`;
 
 // Archivos que se guardan apenas se instala la app (el "cascarón").
@@ -47,7 +47,9 @@ const APP_SHELL = [
 self.addEventListener('install', (event) => {
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE_NAME);
-    await cache.addAll(APP_SHELL);
+    // cache: 'reload' = pedir SIEMPRE la versión fresca al servidor (y no una copia
+    // vieja que el navegador tenga guardada), para que la actualización quede completa.
+    await cache.addAll(APP_SHELL.map((url) => new Request(url, { cache: 'reload' })));
     // Imágenes de ejercicios: las leemos de routines.json y las guardamos todas,
     // así funcionan sin internet desde el primer uso. Si alguna falla, no se
     // bloquea la instalación (se guardará cuando se vea con internet).

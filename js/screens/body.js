@@ -26,9 +26,17 @@ const FIELDS = [
 let chartField = 'weight_kg'; // medida elegida en el gráfico
 let editing = null;           // registro que se está editando (o null = nuevo)
 
+// Al entrar a la pestaña Body, el formulario parte limpio (no en modo edición)
 export async function render(container) {
+  editing = null;
+  await draw(container);
+}
+
+// Dibuja la pantalla. redraw() la vuelve a dibujar SIN perder el estado
+// (medida elegida y registro en edición).
+async function draw(container) {
   const measurements = await listMeasurements(); // más antiguo → más nuevo
-  const redraw = () => { container.replaceChildren(); return render(container); };
+  const redraw = () => { container.replaceChildren(); return draw(container); };
 
   container.append(
     formCard(redraw),
