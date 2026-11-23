@@ -23,7 +23,11 @@ function newId() {
 // internet, queda UNA sola entrada (al sincronizar se envía su estado final).
 
 async function enqueue(kind, id, op = 'upsert') {
-  await db.put('sync_queue', { key: `${kind}:${id}`, kind, id, op, queued_at: nowLocal() });
+  // queued_at con milisegundos: sync.js lo usa para saber si el registro
+  // cambió OTRA vez mientras se estaba enviando.
+  await db.put('sync_queue', { key: `${kind}:${id}`, kind, id, op, queued_at: new Date().toISOString() });
+  // Aviso a sync.js de que hay algo nuevo para enviar (ver startAutoSync)
+  globalThis.dispatchEvent?.(new Event('workoutbody:changed'));
 }
 
 export async function getSyncQueue() {
@@ -204,4 +208,79 @@ export async function deleteMeasurement(measurementId) {
 export async function listMeasurements() {
   const all = await db.getAll('measurements');
   return all.sort((a, b) => a.date.localeCompare(b.date));
+}
+
+// ======================================================================
+// Respaldo (exportar / importar JSON)
+// ======================================================================
+// La URL y el token del Apps Script NO van en el respaldo (son secretos y
+// se ingresan aparte en Settings).
+
+const SECRET_SETTINGS = ['sync_url', 'sync_token'];
+// Ajustes internos de la app que tampoco tiene sentido respaldar
+const INTERNAL_SETTINGS = ['last_sync_at', 'last_sync_error'];
+
+export async function exportAll() {
+  const settings = (await db.getAll('settings'))
+    .filter((s) => !SECRET_SETTINGS.includes(s.key) && !INTERNAL_SETTINGS.includes(s.key));
+  return {
+    app: 'workoutbody',
+    backup_version: 1,
+    exported_at: nowLocal(),
+    sessions: await db.getAll('sessions'),
+    measurements: await db.getAll('measurements'),
+    settings,
+  };
+}
+
+/**
+ * Reemplaza TODOS los datos del teléfono por los del respaldo.
+ * Conserva la URL y el token actuales. Marca todo para sincronizar
+ * (es seguro: el Apps Script actualiza filas existentes, no las duplica).
+ */
+export async function importAll(backup) {
+  if (backup?.app !== 'workoutbody' || !Array.isArray(backup.sessions) || !Array.isArray(backup.measurements)) {
+    throw new Error('This file is not a WorkOutBody backup');
+  }
+  const keep = [];
+  for (const key of SECRET_SETTINGS) {
+    const row = await db.get('settings', key);
+    if (row) keep.push(row);
+  }
+
+  for (const store of ['sessions', 'measurements', 'settings', 'sync_queue']) await db.clear(store);
+
+  for (const s of backup.sessions) {
+    await db.put('sessions', s);
+    if (s.status === 'completed') await enqueue('session', s.session_id);
+  }
+  for (const m of backup.measurements) {
+    await db.put('measurements', m);
+    await enqueue('measurement', m.measurement_id);
+  }
+  for (const s of backup.settings ?? []) {
+    await db.put('settings', s);
+    await enqueue('setting', s.key);
+  }
+  for (const row of keep) await db.put('settings', row);
+
+  return { sessions: backup.sessions.length, measurements: backup.measurements.length };
+}
+
+// ======================================================================
+// Lectura de un registro para enviarlo al Sheet (lo usa sync.js)
+// ======================================================================
+
+/** Devuelve los datos actuales de un elemento de la cola, o null si ya no existe. */
+export async function getRecordForSync(kind, id) {
+  if (kind === 'session') {
+    const s = await db.get('sessions', id);
+    if (!s || s.status !== 'completed') return null;
+    // Solo las columnas del Sheet (sin "status" ni "step", que son internas)
+    const { status, step, ...row } = s;
+    return row;
+  }
+  if (kind === 'measurement') return (await db.get('measurements', id)) ?? null;
+  if (kind === 'setting') return (await db.get('settings', id)) ?? null;
+  return null;
 }

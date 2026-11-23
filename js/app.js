@@ -5,6 +5,7 @@
 //   2. Registra el service worker (sw.js) para que la app funcione sin internet.
 
 import { h } from './ui.js';
+import { startAutoSync } from './sync.js';
 import * as home from './screens/home.js';
 import * as choose from './screens/choose.js';
 import * as routine from './screens/routine.js';
@@ -79,6 +80,9 @@ async function render() {
 // (por ejemplo al tocar un enlace href="#/body").
 window.addEventListener('hashchange', render);
 render();
+
+// Sincronización automática con Google Sheets (ver sync.js)
+startAutoSync();
 
 // ---------- Service worker (modo offline) ----------
 // Solo funciona en https o en localhost. En otros casos se ignora.

@@ -461,3 +461,19 @@ input[type="date"].text-input { min-height: 44px; }
 .history-date { font-weight: 700; width: 92px; flex-shrink: 0; white-space: nowrap; }
 .history-values { flex: 1; font-size: 14px; color: var(--text-dim); }
 .chevron { color: var(--text-dim); font-size: 20px; }
+
+/* ---------- Settings ---------- */
+.form-message { font-size: 14px; margin: 0 0 12px; }
+.form-message[hidden] { display: none; }
+.form-message.ok { color: var(--done); }
+.form-message.error { color: #ff6b6b; }
+.form-message.info { color: var(--text-dim); }
+.label-row { display: flex; justify-content: space-between; align-items: center; }
+.small-btn { color: var(--accent); font-size: 13px; padding: 0 4px; }
+.sync-status { font-size: 14px; margin-bottom: 14px; display: grid; gap: 4px; }
+.sync-status .form-message { margin: 6px 0 0; }
+.top-gap { margin-top: 10px; }
+.inline-form { display: flex; gap: 12px; align-items: center; }
+.inline-form .measure-input { flex: 1; }
+.button-row { display: flex; gap: 10px; }
+.button-row .btn { flex: 1; padding: 14px; font-size: 16px; }

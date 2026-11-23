@@ -4,9 +4,7 @@ App personal (PWA) para registrar rutinas de ejercicio en casa, pensada para iPh
 HTML + CSS + JavaScript puro, sin frameworks ni paso de build: lo que ves en el repo
 es exactamente lo que corre en el teléfono.
 
-> Este README crece etapa por etapa. Por ahora cubre: correr en local, publicar en
-> GitHub Pages e instalar en el iPhone. Más adelante: Google Sheet + Apps Script y
-> cómo editar una rutina.
+> Este README crece etapa por etapa. Falta: imágenes de ejercicios (etapa 7).
 
 ---
 
@@ -70,7 +68,79 @@ activa el modo avión y vuelve a abrirla.
 
 ---
 
-## 4. Editar una rutina
+## 4. Configurar Google Sheet + Apps Script
+
+La app funciona perfecto sin esto (todo queda en el teléfono). El Sheet sirve como
+copia de seguridad y para hacer estadísticas después. Se hace una sola vez, en el computador.
+
+### 4.1 Crear el Sheet y pegar el script
+1. Ve a <https://sheets.new> (crea un Google Sheet nuevo). Ponle nombre, ej. `WorkOutBody`.
+2. Menú **Extensiones → Apps Script**. Se abre el editor en otra pestaña.
+3. Borra todo lo que hay en `Código.gs` y pega el contenido completo de
+   [`apps-script/Code.gs`](apps-script/Code.gs). Guarda (ícono 💾 o `Cmd + S`).
+
+### 4.2 Crear las pestañas y el token
+1. Arriba, en el selector de funciones, elige **`setup`** y toca **▶ Ejecutar**.
+2. Google pide permisos: **Revisar permisos** → elige tu cuenta → aparece
+   "Google no ha verificado esta aplicación" → **Configuración avanzada** →
+   **Ir a … (no seguro)** → **Permitir**. (Es tu propio script; el aviso sale
+   porque no está publicado en la tienda de Google.)
+3. Abajo, en el **Registro de ejecución**, aparece `Tu token es: …`. Cópialo.
+   El token queda guardado en ⚙ **Configuración del proyecto → Propiedades de la
+   secuencia de comandos → TOKEN** (ahí lo puedes ver o cambiar después).
+4. Vuelve al Sheet: ahora tiene las pestañas `sessions`, `session_exercises`,
+   `body_measurements` y `settings` con sus encabezados.
+
+### 4.3 Publicar como aplicación web
+1. En el editor de Apps Script: **Implementar → Nueva implementación**.
+2. En ⚙ *Seleccionar tipo* elige **Aplicación web**.
+3. *Ejecutar como*: **Yo**. *Quién tiene acceso*: **Cualquier usuario**.
+   (Nadie puede escribir sin el token; "cualquier usuario" solo permite que la app
+   llegue al script sin iniciar sesión en Google.)
+4. **Implementar** → copia la **URL de la aplicación web** (termina en `/exec`).
+
+### 4.4 Conectar la app
+1. En el iPhone: app → ⚙ **Settings** → pega la **URL** y el **token** →
+   **Save & test connection**. Debe decir `Connected ✓`.
+   - Truco: si tu Mac y tu iPhone usan el mismo Apple ID, copia en el Mac y pega
+     en el iPhone (Portapapeles universal). Si no, mándatelos por Notas o AirDrop.
+2. Listo. Desde ahora la app sincroniza sola: al abrirla, al terminar una sesión,
+   al guardar medidas y cuando vuelve internet. Settings muestra los cambios
+   pendientes y la última sincronización; **Sync now** fuerza una.
+
+### Si cambias `Code.gs` más adelante
+Pega el código nuevo, guarda, y luego **Implementar → Gestionar implementaciones →
+✏️ Editar → Versión: Nueva versión → Implementar**. Así la URL sigue siendo la misma.
+
+### Problemas comunes
+| Mensaje en la app | Qué revisar |
+|---|---|
+| `Invalid token` | El token de la app no coincide con TOKEN en las propiedades del script. |
+| `Unexpected answer…` | La URL no es la de la aplicación web (`…/exec`), o no elegiste "Cualquier usuario". |
+| `Could not reach the server` | Sin internet o URL mal copiada. Los cambios quedan pendientes y se envían después. |
+
+### Cómo quedan los datos
+- Fechas en formato `2026-11-23`; `completed_at` en hora de Santiago (`2026-11-23 18:45:10`).
+- `week_start` es el lunes de esa semana.
+- Puedes **agregar columnas** o **reordenarlas** en el Sheet: el script escribe por
+  nombre de columna y no borra lo que agregues a mano.
+- Si borras una sesión en la app (solo se puede en la semana actual), también se
+  borra del Sheet.
+
+---
+
+## 5. Respaldo JSON
+
+Settings → **Export** crea un archivo con todas tus sesiones, medidas y estatura
+(sin la URL ni el token). En el iPhone se abre el menú Compartir → **Guardar en Archivos**.
+
+**Import** reemplaza TODOS los datos del teléfono por los del archivo (pide
+confirmación) y vuelve a sincronizar todo con el Sheet sin duplicar filas.
+Útil si cambias de teléfono o borras la app.
+
+---
+
+## 6. Editar una rutina
 
 Todas las rutinas están en [`data/routines.json`](data/routines.json). Tiene dos partes:
 
@@ -103,10 +173,11 @@ Si escribiste mal un id, el test te dice en qué rutina y en qué posición.
 
 ---
 
-## 5. Tests
+## 7. Tests
 
 Prueban el cálculo de semanas (zona horaria de Santiago, cambio de horario, cambio
-de año) y que `routines.json` esté bien escrito. Necesitan Node, pero la app no.
+de año), que `routines.json` esté bien escrito, y el Apps Script (`Code.gs`) contra
+un Google Sheet simulado. Necesitan Node, pero la app no.
 ```bash
 npm test
 ```
@@ -126,7 +197,12 @@ js/ui.js                helper h() para crear elementos HTML
 js/routines.js          lee y valida routines.json
 js/weeks.js             fechas y semanas (lunes a domingo, America/Santiago)
 js/db.js                acceso de bajo nivel a IndexedDB (base de datos del teléfono)
-js/data.js              operaciones de la app: sesiones, borrador, medidas, ajustes
+js/data.js              operaciones de la app: sesiones, borrador, medidas, ajustes, respaldo
+js/sync.js              envía los cambios pendientes al Apps Script
+js/chart.js             gráfico de línea SVG (pestaña Body)
+js/silhouette.js        siluetas con el músculo resaltado
+js/exercise-image.js    imagen animada de cada ejercicio
+apps-script/Code.gs     backend que se pega en el Google Sheet
 js/screens/*.js         una pantalla por archivo
 img/icons/              ícono de la app (icon.svg es el original)
 tests/                  tests (npm test)
