@@ -1,0 +1,9 @@
+{
+  "name": "workoutbody",
+  "private": true,
+  "type": "module",
+  "description": "Solo se usa para correr los tests con Node (npm test). La app no necesita Node.",
+  "scripts": {
+    "test": "node --test tests/"
+  }
+}

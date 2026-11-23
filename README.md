@@ -70,6 +70,49 @@ activa el modo avión y vuelve a abrirla.
 
 ---
 
+## 4. Editar una rutina
+
+Todas las rutinas están en [`data/routines.json`](data/routines.json). Tiene dos partes:
+
+**`exercises`**: el catálogo. Cada ejercicio se define una sola vez:
+```json
+"db_goblet_squat": { "name": "Goblet squat", "implement": "dumbbell",
+                     "image": null, "video_url": null, "note": "One dumbbell" }
+```
+- La clave (`db_goblet_squat`) es el **id**: es lo que va al Sheet. No lo cambies
+  después de usarlo, o las estadísticas lo verán como un ejercicio distinto.
+- `implement`: `dumbbell`, `miniband` o `bodyweight`. Solo los `dumbbell` muestran
+  el campo de kg en la sesión.
+- `video_url`: link opcional (ej. un reel de Instagram), o `null`.
+- `note`: texto corto opcional bajo el nombre, o `null`.
+
+**`routines`**: cada rutina lista sus ejercicios por id, con series y reps:
+```json
+{ "exercise_id": "dead_bug", "sets": 3, "reps": 8, "per_side": true }
+{ "exercise_id": "forearm_plank", "sets": 3, "seconds": 20 }
+```
+- Usa `reps` **o** `seconds`, nunca ambos.
+- `per_side` es opcional (por defecto `false`).
+- El orden de la lista es el orden en la app.
+
+**Después de editar**, revisa que no haya errores y publica:
+```bash
+npm test
+```
+Si escribiste mal un id, el test te dice en qué rutina y en qué posición.
+
+---
+
+## 5. Tests
+
+Prueban el cálculo de semanas (zona horaria de Santiago, cambio de horario, cambio
+de año) y que `routines.json` esté bien escrito. Necesitan Node, pero la app no.
+```bash
+npm test
+```
+
+---
+
 ## Estructura de archivos
 
 ```
@@ -77,11 +120,23 @@ index.html              página única; las pantallas se dibujan con JS dentro d
 manifest.webmanifest    nombre, ícono y colores al "Agregar a inicio"
 sw.js                   service worker: guarda la app para uso offline
 css/styles.css          estilos (colores definidos arriba del archivo)
+data/routines.json      las rutinas (lo único que se edita a mano)
 js/app.js               arranque + navegación entre pantallas
 js/ui.js                helper h() para crear elementos HTML
+js/routines.js          lee y valida routines.json
+js/weeks.js             fechas y semanas (lunes a domingo, America/Santiago)
+js/db.js                acceso de bajo nivel a IndexedDB (base de datos del teléfono)
+js/data.js              operaciones de la app: sesiones, borrador, medidas, ajustes
 js/screens/*.js         una pantalla por archivo
 img/icons/              ícono de la app (icon.svg es el original)
+tests/                  tests (npm test)
 ```
+
+### Dónde se guardan los datos
+En el teléfono, en IndexedDB (dentro de Safari, no en archivos). Las sesiones,
+medidas y ajustes viven ahí; cada cambio queda anotado en una cola (`sync_queue`)
+para enviarlo al Google Sheet cuando haya internet. Si agregas un archivo `.js`
+nuevo, súmalo también a la lista `APP_SHELL` de `sw.js` para que funcione offline.
 
 ### Cómo funciona la navegación
 La parte de la URL después de `#` indica la pantalla: `#/home`, `#/body`,
