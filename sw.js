@@ -11,7 +11,7 @@
 // Si alguna vez la app queda "pegada" en una versión vieja, sube el número de
 // CACHE_VERSION, publica, y abre la app dos veces.
 
-const CACHE_VERSION = 'v8';
+const CACHE_VERSION = 'v9';
 const CACHE_NAME = `workoutbody-${CACHE_VERSION}`;
 
 // Archivos que se guardan apenas se instala la app (el "cascarón").

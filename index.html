@@ -18,7 +18,9 @@
   <!-- Metadatos para que iOS trate la página como app al "Agregar a pantalla de inicio" -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <!-- "black" (no "black-translucent"): con translúcida, iOS deja una franja vacía
+       bajo la barra inferior en apps instaladas. El fondo es negro, así que se ve igual. -->
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="apple-mobile-web-app-title" content="WorkOutBody">
   <link rel="apple-touch-icon" href="./img/icons/apple-touch-icon.png">
   <link rel="icon" type="image/png" href="./img/icons/icon-192.png">
