@@ -1,6 +1,6 @@
 // screens/body.js — pestaña Body: registrar peso y medidas, ver gráfico e historial.
 //
-// - Formulario: fecha (hoy por defecto, editable) + 6 medidas opcionales.
+// - Formulario: fecha (hoy por defecto, editable) + 7 medidas opcionales.
 // - Gráfico de línea de la medida elegida.
 // - Historial: tocar un registro lo carga en el formulario para editarlo o borrarlo.
 
@@ -12,7 +12,7 @@ import { saveMeasurement, deleteMeasurement, listMeasurements } from '../data.js
 export const title = 'Body';
 export const tab = 'body';
 
-// Las 6 medidas: campo en la base de datos, nombre y unidad
+// Las 7 medidas: campo en la base de datos, nombre y unidad
 const FIELDS = [
   { key: 'weight_kg', label: 'Weight', unit: 'kg' },
   { key: 'waist_cm', label: 'Waist', unit: 'cm' },
@@ -20,6 +20,7 @@ const FIELDS = [
   { key: 'bust_cm', label: 'Bust', unit: 'cm' },
   { key: 'arm_cm', label: 'Arm', unit: 'cm' },
   { key: 'thigh_cm', label: 'Thigh', unit: 'cm' },
+  { key: 'knee_cm', label: 'Knee', unit: 'cm' },
 ];
 
 // Estado que se mantiene al volver a dibujar la pantalla
@@ -143,19 +144,29 @@ function chartCard(measurements, redraw) {
     .filter((m) => m[field.key] != null)
     .map((m) => ({ date: m.date, value: m[field.key] }));
 
+  // Botones para elegir la medida
+  const chips = h('div', { class: 'chips', role: 'tablist' },
+    FIELDS.map((f) =>
+      h('button', {
+        class: `chip${f.key === chartField ? ' active' : ''}`,
+        role: 'tab',
+        'aria-selected': f.key === chartField ? 'true' : 'false',
+        onclick: () => { chartField = f.key; redraw(); },
+      }, f.label),
+    ),
+  );
+  // La fila de botones se desplaza de lado: dejamos visible el elegido (ej. "Knee", al final)
+  requestAnimationFrame(() => {
+    const active = chips.querySelector('.chip.active');
+    if (!active) return;
+    // Distancia del botón al borde izquierdo de la fila, considerando lo ya desplazado
+    const offset = active.getBoundingClientRect().left - chips.getBoundingClientRect().left + chips.scrollLeft;
+    chips.scrollLeft = offset - (chips.clientWidth - active.offsetWidth) / 2;
+  });
+
   return h('section', { class: 'card' },
     h('h3', { class: 'card-title' }, 'Progress'),
-    // Botones para elegir la medida
-    h('div', { class: 'chips', role: 'tablist' },
-      FIELDS.map((f) =>
-        h('button', {
-          class: `chip${f.key === chartField ? ' active' : ''}`,
-          role: 'tab',
-          'aria-selected': f.key === chartField ? 'true' : 'false',
-          onclick: () => { chartField = f.key; redraw(); },
-        }, f.label),
-      ),
-    ),
+    chips,
     lineChart(points, { unit: field.unit }),
   );
 }

@@ -27,7 +27,7 @@ const SHEETS = {
   body_measurements: {
     key: ['measurement_id'],
     headers: ['measurement_id', 'date', 'weight_kg', 'waist_cm', 'hip_cm',
-              'bust_cm', 'arm_cm', 'thigh_cm'],
+              'bust_cm', 'arm_cm', 'thigh_cm', 'knee_cm'],
   },
   settings: {
     key: ['key'],

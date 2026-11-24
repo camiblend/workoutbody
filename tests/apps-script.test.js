@@ -113,10 +113,11 @@ test('session delete removes the session and its exercises', () => {
 
 test('measurements: upsert, update and delete by measurement_id', () => {
   const env = makeEnv();
-  const m = { measurement_id: 'm1', date: '2026-11-20', weight_kg: 67.6, waist_cm: null, hip_cm: 99.5, bust_cm: null, arm_cm: null, thigh_cm: null };
+  const m = { measurement_id: 'm1', date: '2026-11-20', weight_kg: 67.6, waist_cm: null, hip_cm: 99.5, bust_cm: null, arm_cm: null, thigh_cm: null, knee_cm: 41 };
   env.post({ token: 'secret', changes: [{ key: 'measurement:m1', kind: 'measurement', op: 'upsert', id: 'm1', data: m }] });
   env.post({ token: 'secret', changes: [{ key: 'measurement:m1', kind: 'measurement', op: 'upsert', id: 'm1', data: { ...m, weight_kg: 67.2 } }] });
   assert.deepEqual(env.table('body_measurements').map((r) => r.weight_kg), [67.2]);
+  assert.deepEqual(env.table('body_measurements').map((r) => r.knee_cm), [41]);
   env.post({ token: 'secret', changes: [{ key: 'measurement:m1', kind: 'measurement', op: 'delete', id: 'm1' }] });
   assert.equal(env.table('body_measurements').length, 0);
 });
