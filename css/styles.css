@@ -164,7 +164,7 @@ main {
 .badge.extra { background: rgba(214, 255, 121, 0.14); color: var(--extra); }
 
 /* ---------- Home ---------- */
-.start-btn { margin: 4px 0 20px; font-size: 20px; padding: 18px; box-shadow: 0 6px 24px rgba(95, 0, 186, 0.6); }
+.start-btn { margin: 4px 0 20px; font-size: 20px; padding: 18px; }
 
 .draft-banner {
   display: flex;
