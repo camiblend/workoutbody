@@ -11,6 +11,7 @@ import { loadRoutines, doseLabel, usesWeight } from '../routines.js';
 import { exerciseImage } from '../exercise-image.js';
 import { dayLabel } from '../weeks.js';
 import { getDraft, updateDraft, completeDraft } from '../data.js';
+import { keepScreenOn, allowScreenOff, isSupported } from '../wake-lock.js';
 
 export const title = 'Workout';
 export const tab = 'home';
@@ -52,6 +53,21 @@ export async function render(container) {
   if (draft.step === 'warmup') container.append(warmupStep(draft, goTo));
   if (draft.step === 'routine') container.append(routineStep(draft, routine, goTo));
   if (draft.step === 'cooldown') container.append(cooldownStep(draft, goTo));
+
+  // Pantalla siempre encendida SOLO en el paso Routine (entre series no hay
+  // que desbloquear). En Warm-up y Cool-down se apaga sola como siempre.
+  if (draft.step === 'routine') {
+    const note = container.querySelector('.screen-on-note');
+    const ok = await keepScreenOn();
+    if (note) {
+      note.textContent = ok
+        ? '☀︎ Screen stays on during the routine'
+        : isSupported() ? '' : 'This iPhone can\'t keep the screen on (needs iOS 18.4+)';
+      note.hidden = !note.textContent;
+    }
+  } else {
+    await allowScreenOff();
+  }
 }
 
 // ---------------------------------------------------------------------
@@ -218,6 +234,7 @@ function routineStep(draft, routine, goTo) {
 
   return h('div', { class: 'step-body' },
     h('div', { class: 'routine-step-head' }, h('h3', {}, 'Routine'), counter),
+    h('p', { class: 'screen-on-note muted small', hidden: true }),
     h('ul', { class: 'exercise-list' }, rows),
     h('div', { class: 'sticky-action' },
       h('button', { class: 'btn', onclick: () => goTo('cooldown') }, 'OK'),

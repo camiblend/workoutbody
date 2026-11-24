@@ -366,6 +366,8 @@ main {
 
 /* Checklist de ejercicios */
 .routine-step-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 10px; }
+.screen-on-note { margin: -4px 0 10px; }
+.screen-on-note[hidden] { display: none; }
 .check-row {
   display: flex; gap: 12px; align-items: center;
   background: var(--surface);

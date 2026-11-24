@@ -6,6 +6,7 @@
 
 import { h } from './ui.js';
 import { startAutoSync } from './sync.js';
+import { allowScreenOff } from './wake-lock.js';
 import * as home from './screens/home.js';
 import * as choose from './screens/choose.js';
 import * as routine from './screens/routine.js';
@@ -58,6 +59,10 @@ async function render() {
     tab.classList.toggle('active', tab.dataset.tab === screen.tab);
   });
   document.getElementById('settings-btn').classList.toggle('active', name === 'settings');
+
+  // Al cambiar de pantalla la pantalla del teléfono vuelve a apagarse sola
+  // (el paso Routine de la sesión lo vuelve a pedir; ver wake-lock.js)
+  await allowScreenOff();
 
   // Borra la pantalla anterior y dibuja la nueva
   screenEl.replaceChildren();
