@@ -124,9 +124,34 @@ export async function discardDraft() {
   if (draft) await db.remove('sessions', draft.session_id);
 }
 
-/** Finish: marca el borrador como completado y lo deja listo para sincronizar. */
+/**
+ * Último peso usado en cada ejercicio, mirando todas las sesiones completadas.
+ * Devuelve { exercise_id: kg }. Es por ejercicio (no por rutina): el goblet squat
+ * de Full body y el de Butt & Leg comparten su último peso.
+ */
+export async function getLastWeights() {
+  const last = {};
+  for (const session of await listCompletedSessions()) { // de la más antigua a la más nueva
+    for (const e of session.exercises ?? []) {
+      if (e.weight_kg != null) last[e.exercise_id] = e.weight_kg; // la más nueva gana
+    }
+  }
+  return last;
+}
+
+/**
+ * Finish: marca el borrador como completado y lo deja listo para sincronizar.
+ * Si un ejercicio marcado como hecho quedó sin kg, se asume que usaste el
+ * mismo peso que la última vez (el que se mostraba en gris).
+ */
 export async function completeDraft(changes = {}) {
-  const draft = await updateDraft({ ...changes, status: 'completed', completed_at: nowLocal() });
+  const lastWeights = await getLastWeights(); // antes de completar (el borrador no cuenta)
+  const current = await getDraft();
+  const exercises = (changes.exercises ?? current?.exercises ?? []).map((e) =>
+    e.done && e.weight_kg == null && lastWeights[e.exercise_id] != null
+      ? { ...e, weight_kg: lastWeights[e.exercise_id] }
+      : e);
+  const draft = await updateDraft({ ...changes, exercises, status: 'completed', completed_at: nowLocal() });
   delete draft.step; // ya no se necesita
   await db.put('sessions', draft);
   await recalculateExtras(draft.week_start);

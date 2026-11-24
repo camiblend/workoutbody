@@ -10,7 +10,7 @@ import { h, showToast } from '../ui.js';
 import { loadRoutines, doseLabel, usesWeight } from '../routines.js';
 import { exerciseImage } from '../exercise-image.js';
 import { dayLabel } from '../weeks.js';
-import { getDraft, updateDraft, completeDraft } from '../data.js';
+import { getDraft, updateDraft, completeDraft, getLastWeights } from '../data.js';
 import { keepScreenOn, allowScreenOff, isSupported } from '../wake-lock.js';
 
 export const title = 'Workout';
@@ -51,7 +51,7 @@ export async function render(container) {
   );
 
   if (draft.step === 'warmup') container.append(warmupStep(draft, goTo));
-  if (draft.step === 'routine') container.append(routineStep(draft, routine, goTo));
+  if (draft.step === 'routine') container.append(routineStep(draft, routine, goTo, await getLastWeights()));
   if (draft.step === 'cooldown') container.append(cooldownStep(draft, goTo));
 
   // Pantalla siempre encendida SOLO en el paso Routine (entre series no hay
@@ -165,7 +165,10 @@ function cooldownStep(draft, goTo) {
 // ---------------------------------------------------------------------
 // Paso 2: checklist de ejercicios + kg opcional
 
-function routineStep(draft, routine, goTo) {
+/**
+ * @param {object} lastWeights  { exercise_id: kg } último peso usado en cada ejercicio
+ */
+function routineStep(draft, routine, goTo, lastWeights = {}) {
   // Copia de los ejercicios del borrador; cada cambio se guarda al tiro
   const exercises = draft.exercises.map((e) => ({ ...e }));
   const save = () => updateDraft({ exercises });
@@ -199,14 +202,16 @@ function routineStep(draft, routine, goTo) {
         class: 'kg-input',
         type: 'text',
         inputmode: 'decimal', // teclado numérico con coma/punto
-        placeholder: '–',
+        // En gris: el último peso usado en este ejercicio (o "–" si nunca lo registraste).
+        // Si no escribes nada, al terminar se guarda ese mismo peso.
+        placeholder: lastWeights[exercise.exercise_id] ?? '–',
         'aria-label': `${item.name} weight in kg`,
         value: exercise.weight_kg ?? '',
         onclick: (e) => e.stopPropagation(), // tocar el campo no marca el ejercicio
         oninput: async () => {
-          // Acepta "4,5" o "4.5". Vacío o inválido → null.
+          // Acepta "4,5" o "4.5". "0" = sin peso ese día. Vacío o inválido → null.
           const value = parseFloat(input.value.replace(',', '.'));
-          exercise.weight_kg = Number.isFinite(value) && value > 0 ? value : null;
+          exercise.weight_kg = Number.isFinite(value) && value >= 0 ? value : null;
           await save();
         },
       });

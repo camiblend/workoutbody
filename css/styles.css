@@ -403,6 +403,8 @@ main {
   padding: 6px;
 }
 .kg-input:focus { outline: none; border-color: var(--accent-ink); }
+/* El último peso aparece en gris (por defecto); lo que escribes, en blanco */
+.kg-input::placeholder { color: var(--text-dim); opacity: 1; }
 
 /* Mensaje temporal */
 .toast {
