@@ -45,11 +45,14 @@ export async function render(container) {
   // ---------- Parte de arriba: Start o "Workout in progress" ----------
   container.append(draft ? draftBanner(draft, groupName, redraw) : startButton(today));
 
-  // ---------- Timeline (semana más nueva arriba) ----------
+  // ---------- Timeline vertical (semana más nueva arriba) ----------
+  // Una línea a la izquierda une un círculo por semana; la caja va al lado.
+  const timeline = h('div', { class: 'timeline' });
+  container.append(timeline);
   const shown = Math.min(visibleWeeks, totalWeeks);
   for (let i = 0; i < shown; i++) {
     const ws = addDays(currentWeek, -7 * i);
-    container.append(weekCard({
+    timeline.append(weekCard({
       weekStartIso: ws,
       number: weekNumber(ws, firstWeek),
       sessions: byWeek[ws] ?? [],
@@ -96,9 +99,10 @@ function draftBanner(draft, groupName, redraw) {
   );
 }
 
-/** Tarjeta de una semana: círculos + lista de lo entrenado. */
+/** Una semana del timeline: círculo en la línea + título + caja con puntos y lista. */
 function weekCard({ weekStartIso, number, sessions, isCurrent, groupName, redraw }) {
   const extras = sessions.length - WEEKLY_GOAL;
+  const goalReached = sessions.length >= WEEKLY_GOAL;
 
   // --- Círculos conectados 1 → 2 → 3 ---
   const track = h('div', { class: 'track' });
@@ -144,14 +148,35 @@ function weekCard({ weekStartIso, number, sessions, isCurrent, groupName, redraw
     );
   }
 
-  return h('section', { class: `card week${isCurrent ? ' current' : ''}` },
-    h('header', { class: 'week-head' },
+  // Círculo de la línea: ✓ verde si se cumplió la meta, rayo morado en la
+  // semana actual, rayo gris en las demás.
+  const nodeClass = goalReached ? 'goal' : isCurrent ? 'current' : '';
+  const node = h('span', { class: `tl-node ${nodeClass}`, 'aria-hidden': 'true' },
+    goalReached ? checkIcon() : boltIcon());
+
+  return h('section', { class: `tl-week${isCurrent ? ' current' : ''}` },
+    h('header', { class: 'tl-head' },
+      node,
       h('span', { class: 'week-title' }, `Week ${number}`),
       isCurrent ? h('span', { class: 'badge now' }, 'This week') : null,
-      h('span', { class: 'week-range muted' }, weekRangeLabel(weekStartIso)),
+      h('span', { class: 'tl-count' },
+        String(Math.min(sessions.length, WEEKLY_GOAL)),
+        h('span', { class: 'muted' }, `/${WEEKLY_GOAL}`),
+      ),
     ),
-    h('div', { class: 'week-body' }, track, list),
+    h('div', { class: 'card week-box' },
+      h('div', { class: 'week-range muted' }, weekRangeLabel(weekStartIso)),
+      track,
+      list,
+    ),
   );
+}
+
+/** Rayo (dibujado a mano) para el círculo de la línea de tiempo. */
+function boltIcon() {
+  const span = document.createElement('span');
+  span.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M13.5 2 5 13.5h6L10 22l9-12.5h-6.2L13.5 2Z" fill="currentColor"/></svg>';
+  return span.firstChild;
 }
 
 /** Ícono ✓ en SVG (más nítido que el carácter de texto). */

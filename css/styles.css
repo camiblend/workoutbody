@@ -177,12 +177,39 @@ main {
 .draft-title { font-weight: 700; }
 .draft-actions { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
 
-.week.current { border: 1px solid rgba(160, 155, 231, 0.45); }
-.week-head { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
-.week-title { font-weight: 700; font-size: 18px; }
-.week-range { margin-left: auto; font-size: 13px; }
+/* Timeline vertical: línea a la izquierda + un círculo por semana */
+.tl-week { position: relative; padding-left: 50px; padding-bottom: 20px; }
+.tl-week::before {             /* la línea */
+  content: '';
+  position: absolute;
+  left: 17px; top: 0; bottom: 0;
+  width: 2px;
+  background: var(--border);
+}
+.tl-week:first-child::before { top: 18px; }                 /* empieza en el primer círculo */
+.tl-week:last-child::before { bottom: auto; height: 18px; } /* termina en el último */
+.tl-week:only-child::before { display: none; }
 
-.week-body { display: flex; align-items: flex-start; gap: 16px; }
+.tl-head { position: relative; display: flex; align-items: center; gap: 8px; height: 36px; margin-bottom: 8px; }
+.tl-node {
+  position: absolute;
+  left: -50px; top: 0;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--surface-2);
+  color: var(--text-dim);
+  z-index: 1;
+}
+.tl-node.current { background: var(--accent); color: #fff; box-shadow: 0 0 0 4px rgba(95, 0, 186, 0.35); }
+.tl-node.goal { background: var(--done); color: #000; }
+.tl-week:not(.current) .week-title { color: var(--text-dim); }
+.tl-count { margin-left: auto; font-weight: 700; font-size: 17px; }
+
+.week-box { margin-bottom: 0; }
+.tl-week.current .week-box { border: 1px solid rgba(160, 155, 231, 0.45); }
+.week-title { font-weight: 700; font-size: 18px; }
+.week-range { font-size: 12px; margin-bottom: 10px; }
 
 /* Círculos conectados */
 .track { display: flex; align-items: flex-start; flex-shrink: 0; }
@@ -209,7 +236,12 @@ main {
 }
 
 /* Lista de lo entrenado */
-.week-list { list-style: none; margin: 0; padding: 0; flex: 1; min-width: 0; font-size: 15px; }
+.week-list {
+  list-style: none;
+  margin: 12px 0 0; padding: 10px 0 0;
+  border-top: 1px solid var(--border);
+  font-size: 15px;
+}
 .week-list li { display: flex; align-items: center; gap: 6px; min-height: 26px; }
 .delete-btn {
   margin-left: auto;

@@ -45,7 +45,7 @@
       "id": "full_body_beginner", "muscle_group": "full_body", "name": "Full body",
       "items": [
         { "exercise_id": "db_goblet_squat",          "sets": 3, "reps": 12 },
-        { "exercise_id": "incline_push_up",          "sets": 3, "reps": 8 },
+        { "exercise_id": "incline_push_up",          "sets": 3, "reps": 5 },
         { "exercise_id": "db_bent_over_row",         "sets": 3, "reps": 12 },
         { "exercise_id": "band_glute_bridge",        "sets": 3, "reps": 15 },
         { "exercise_id": "db_seated_shoulder_press", "sets": 3, "reps": 10 },
@@ -110,7 +110,7 @@
         { "exercise_id": "db_floor_fly",     "sets": 3, "reps": 12 },
         { "exercise_id": "db_squeeze_press", "sets": 3, "reps": 12 },
         { "exercise_id": "db_pullover",      "sets": 3, "reps": 12 },
-        { "exercise_id": "incline_push_up",  "sets": 3, "reps": 8 }
+        { "exercise_id": "incline_push_up",  "sets": 3, "reps": 5 }
       ]
     }
   ]
