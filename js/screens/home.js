@@ -116,9 +116,9 @@ function weekCard({ weekStartIso, number, sessions, isCurrent, groupName, redraw
       ),
     );
   }
-  if (extras > 0) {
-    track.append(h('div', { class: 'extra-bubble', title: 'Extra workouts' }, `+${extras}`));
-  }
+  // Columna izquierda: los círculos y, debajo, el "+N" de sesiones extra
+  const left = h('div', { class: 'week-left' }, track,
+    extras > 0 ? h('div', { class: 'extra-bubble', title: 'Extra workouts' }, `+${extras}`) : null);
 
   // --- Lista: "1. Back", "2. Chest", "3. —", "4. Arm  EXTRA" ---
   const list = h('ol', { class: 'week-list' });
@@ -166,8 +166,8 @@ function weekCard({ weekStartIso, number, sessions, isCurrent, groupName, redraw
     ),
     h('div', { class: 'card week-box' },
       h('div', { class: 'week-range muted' }, weekRangeLabel(weekStartIso)),
-      track,
-      list,
+      // Círculos a la izquierda, lista de lo entrenado a la derecha
+      h('div', { class: 'week-body' }, left, list),
     ),
   );
 }

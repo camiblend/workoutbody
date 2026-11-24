@@ -210,12 +210,14 @@ main {
 .tl-week.current .week-box { border: 1px solid rgba(160, 155, 231, 0.45); }
 .week-title { font-weight: 700; font-size: 18px; }
 .week-range { font-size: 12px; margin-bottom: 10px; }
+.week-body { display: flex; align-items: flex-start; gap: 12px; }
+.week-left { flex-shrink: 0; }
 
 /* Círculos conectados */
 .track { display: flex; align-items: flex-start; flex-shrink: 0; }
-.dot-wrap { display: flex; flex-direction: column; align-items: center; width: 38px; }
+.dot-wrap { display: flex; flex-direction: column; align-items: center; width: 32px; }
 .dot {
-  width: 34px; height: 34px;
+  width: 30px; height: 30px;
   border-radius: 50%;
   border: 2px solid var(--border);
   display: flex; align-items: center; justify-content: center;
@@ -224,10 +226,11 @@ main {
 }
 .dot.done { background: var(--done); border-color: var(--done); color: #000; }
 .dot-date { font-size: 11px; color: var(--text-dim); margin-top: 4px; height: 14px; }
-.connector { width: 12px; height: 2px; background: var(--border); margin-top: 16px; }
+.connector { width: 8px; height: 2px; background: var(--border); margin-top: 14px; }
 .connector.done { background: var(--done); }
 .extra-bubble {
-  margin: 6px 0 0 6px;
+  display: inline-block;
+  margin: 6px 0 0;
   font-size: 12px; font-weight: 700;
   color: var(--extra);
   border: 1.5px solid var(--extra);
@@ -236,12 +239,7 @@ main {
 }
 
 /* Lista de lo entrenado */
-.week-list {
-  list-style: none;
-  margin: 12px 0 0; padding: 10px 0 0;
-  border-top: 1px solid var(--border);
-  font-size: 15px;
-}
+.week-list { list-style: none; margin: 0; padding: 0; flex: 1; min-width: 0; font-size: 15px; }
 .week-list li { display: flex; align-items: center; gap: 6px; min-height: 26px; }
 .delete-btn {
   margin-left: auto;
