@@ -178,8 +178,10 @@ Todas las rutinas están en [`data/routines.json`](data/routines.json). Tiene do
 ```
 - La clave (`db_goblet_squat`) es el **id**: es lo que va al Sheet. No lo cambies
   después de usarlo, o las estadísticas lo verán como un ejercicio distinto.
-- `implement`: `dumbbell`, `miniband` o `bodyweight`. Solo los `dumbbell` muestran
+- `implement`: `dumbbell`, `miniband` o `bodyweight`. Los `dumbbell` muestran
   el campo de kg en la sesión.
+- `track_weight`: opcional. Ponle `true` para mostrar el campo de kg en un ejercicio
+  que no es de mancuernas (ej. `band_clamshell`, para anotar la miniband de 5 kg).
 - `video_url`: link opcional (ej. un reel de Instagram), o `null`.
 - `note`: texto corto opcional bajo el nombre, o `null`.
 

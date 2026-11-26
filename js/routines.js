@@ -63,7 +63,10 @@ export function doseLabel(item) {
   return `${item.sets}×${amount}${item.per_side ? ' per side' : ''}`;
 }
 
-/** ¿Se muestra el campo de kg? Solo si el ejercicio usa mancuernas. */
+/**
+ * ¿Se muestra el campo de kg? Si el ejercicio usa mancuernas, o si en
+ * data/routines.json tiene "track_weight": true (ej. una miniband de 5 kg).
+ */
 export function usesWeight(item) {
-  return item.implement === 'dumbbell';
+  return item.implement === 'dumbbell' || item.track_weight === true;
 }

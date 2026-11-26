@@ -31,7 +31,7 @@
     "reverse_lunge":             { "name": "Reverse lunge",                     "implement": "dumbbell",   "image": "img/exercises/reverse_lunge", "video_url": null, "note": "No weight or with dumbbells" },
     "db_romanian_deadlift":      { "name": "Dumbbell Romanian deadlift",        "implement": "dumbbell",   "image": "img/exercises/db_romanian_deadlift", "video_url": null, "note": null },
     "band_lateral_walk":         { "name": "Band lateral walk",                 "implement": "miniband",   "image": "img/exercises/band_lateral_walk", "video_url": null, "note": "Reps = steps" },
-    "band_clamshell":            { "name": "Band clamshell",                    "implement": "miniband",   "image": null, "video_url": null, "note": null },
+    "band_clamshell":            { "name": "Band clamshell",                    "implement": "miniband", "track_weight": true, "image": null, "video_url": null, "note": null },
 
     "crunch":                    { "name": "Crunch",                            "implement": "bodyweight", "image": "img/exercises/crunch", "video_url": null, "note": null },
     "dead_bug":                  { "name": "Dead bug",                          "implement": "bodyweight", "image": "img/exercises/dead_bug", "video_url": null, "note": null },

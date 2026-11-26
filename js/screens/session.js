@@ -195,7 +195,7 @@ function routineStep(draft, routine, goTo, lastWeights = {}) {
       await save();
     };
 
-    // Campo de kg: solo para ejercicios con mancuernas
+    // Campo de kg: ejercicios con mancuernas o con "track_weight" (ver usesWeight)
     let weightField = null;
     if (usesWeight(item)) {
       const input = h('input', {
