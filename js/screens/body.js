@@ -1,6 +1,6 @@
 // screens/body.js — pestaña Body: registrar peso y medidas, ver gráfico e historial.
 //
-// - Formulario: fecha (hoy por defecto, editable) + 7 medidas opcionales.
+// - Formulario: fecha (hoy por defecto, editable) + 8 medidas opcionales.
 // - Gráfico de línea de la medida elegida.
 // - Historial: tocar un registro lo carga en el formulario para editarlo o borrarlo.
 
@@ -12,11 +12,12 @@ import { saveMeasurement, deleteMeasurement, listMeasurements } from '../data.js
 export const title = 'Body';
 export const tab = 'body';
 
-// Las 7 medidas: campo en la base de datos, nombre y unidad
+// Las 8 medidas: campo en la base de datos, nombre y unidad
 const FIELDS = [
   { key: 'weight_kg', label: 'Weight', unit: 'kg' },
   { key: 'waist_cm', label: 'Waist', unit: 'cm' },
   { key: 'hip_cm', label: 'Hip', unit: 'cm' },
+  { key: 'glutes_cm', label: 'Glutes', unit: 'cm' },
   { key: 'bust_cm', label: 'Bust', unit: 'cm' },
   { key: 'arm_cm', label: 'Arm', unit: 'cm' },
   { key: 'thigh_cm', label: 'Thigh', unit: 'cm' },

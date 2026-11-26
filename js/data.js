@@ -207,11 +207,11 @@ async function recalculateExtras(weekStartIso) {
 // ======================================================================
 // Medidas corporales
 // ======================================================================
-// { measurement_id, date, weight_kg, waist_cm, hip_cm, bust_cm, arm_cm, thigh_cm, knee_cm }
+// { measurement_id, date, weight_kg, waist_cm, hip_cm, glutes_cm, bust_cm, arm_cm, thigh_cm, knee_cm }
 // Para agregar una medida nueva: súmala aquí y en FIELDS de screens/body.js.
 // El Apps Script crea la columna en el Sheet automáticamente.
 
-export const MEASUREMENT_FIELDS = ['weight_kg', 'waist_cm', 'hip_cm', 'bust_cm', 'arm_cm', 'thigh_cm', 'knee_cm'];
+export const MEASUREMENT_FIELDS = ['weight_kg', 'waist_cm', 'hip_cm', 'glutes_cm', 'bust_cm', 'arm_cm', 'thigh_cm', 'knee_cm'];
 
 /** Crea o actualiza un registro de medidas (si no trae measurement_id, es nuevo). */
 export async function saveMeasurement(values) {
